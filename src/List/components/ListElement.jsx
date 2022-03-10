@@ -5,9 +5,12 @@ const ListElement = props => {
     return (
         <li className={style.element}>
             <span>{props.text}</span>
-            <input type="checkbox" className={style.checkbox} checked={props.isChecked}
-            onChange={() => props.check(props.index)}
-            ><label/></input>
+            <input
+                type="checkbox"
+                className={style.checkbox}
+                checked={props.isChecked}
+                onChange={() => props.check(props.index)}
+            />
         </li>
     );
 };

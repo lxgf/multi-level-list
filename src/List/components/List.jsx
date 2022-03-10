@@ -1,29 +1,87 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import style from '../assets/styles/list.module.css';
 import ListElement from "./ListElement";
-import MaximizeIcon from '../assets/images/max.svg';
+import EmbeddedList from "./EmbeddedList";
 
 const List = props => {
     const [listData, setListData] = useState(props.listData);
-    const [isMaximized, setMaxState] = useState(false)
 
+    const assignIds = (listData, generalCounter) => {
+        if (typeof generalCounter === 'undefined') {
+            let counter = 0
+            listData.forEach(listElem => {
+                listElem.id = counter
+                if (listElem.list !== false) {
+                    assignIds(listElem.list, counter)
+                }
+                counter++
+            })
+        } else {
+            let counter = 0
+            listData.forEach(listElem => {
+                listElem.id = generalCounter + '-' + counter
+                if (listElem.list !== false) {
+                    assignIds(listElem.list, generalCounter + '-' + counter)
+                }
+                counter++
+            })
+        }
+
+        return listData
+    }
+
+    useEffect(() => {
+        setListData(assignIds(listData))
+    }, []);
+
+    // меняем состояние чекбокса на обычном элементе
     const check = async index => {
+        console.log(index)
         let newListData = [...listData]
-        newListData[index].isChecked = !listData[index].isChecked;
+        if (newListData[index].isChecked === 0)
+            newListData[index].isChecked = 1
+        else
+            newListData[index].isChecked = 0
         await setListData(newListData)
     }
 
+    // меняем состояние чекбокса на элементе-списке и состояния всех вложенные чекбоксов
     const checkList = async index => {
+        console.log(index)
         let newListData = [...listData]
-        newListData[index].isChecked = !listData[index].isChecked;
-        newListData[index].list.forEach((listDataItem, embeddedListIndex) => {
-            if (listDataItem.list === false) {
-                listDataItem.isChecked = !listDataItem.isChecked;
-            } else {
-                console.log('123')
-            }
-        })
+        switch (newListData[index].isChecked) {
+            case 0:
+                newListData[index].isChecked = 1
+                if (newListData[index].list !== false) {
+                    checkEmbeddedLists(newListData[index].list, 1)
+                }
+                break
+            case 1:
+                newListData[index].isChecked = 0
+                if (newListData[index].list !== false) {
+                    checkEmbeddedLists(newListData[index].list, 0)
+                }
+                break
+            case 2:
+                newListData[index].isChecked = 1
+                if (newListData[index].list !== false) {
+                    checkEmbeddedLists(newListData[index].list, 1)
+                }
+                break
+            default:
+                console.warn('Incorrect checked status!')
+                break
+        }
         await setListData(newListData)
+    }
+
+    // функция задачи значене чекбоксам во вложенном списке
+    const checkEmbeddedLists = (list, checkedVal) => {
+        list.forEach((listElem, elemIndex) => {
+            listElem.isChecked = checkedVal
+            if (listElem.list !== false)
+                checkEmbeddedLists(listElem.list, checkedVal)
+        })
     }
 
     if (listData.length === 0) {
@@ -35,23 +93,27 @@ const List = props => {
                 listData.map((listElement, index) => {
                     if (listElement.list === false) {
                         return (
-                            <ListElement check={check} key={index} index={index} text={listElement.text} isChecked={listElement.isChecked}/>
+                            <ListElement
+                                check={check}
+                                key={index}
+                                index={index}
+                                id={listElement.id}
+                                text={listElement.text}
+                                isChecked={listElement.isChecked}
+                            />
                         )
                     } else {
                         return (
-                            <li key={index} className={style.embeddedList}>
-                                <div className={style.listHeader}>
-                                    <img src={MaximizeIcon} className={style.arrow} alt="Maximize"
-                                         onClick={(e) => {
-                                             isMaximized ? setMaxState(false) : setMaxState(true)
-                                             e.target.classList.toggle(style.rotate)
-                                         }}
-                                    />
-                                    {listElement.text}
-                                    <input onChange={() => checkList(index)} type="checkbox" checked={listElement.isChecked}/>
-                                </div>
-                                {isMaximized && <List listData={listElement.list}/>}
-                            </li>
+                            <EmbeddedList
+                                check={check}
+                                checkList={checkList}
+                                index={index}
+                                key={index}
+                                id={listElement.id}
+                                text={listElement.text}
+                                isChecked={listElement.isChecked}
+                                list={listElement.list}
+                            />
                         )
                     }
                 })

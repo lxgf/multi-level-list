@@ -11,8 +11,3 @@
 .element:hover {
     border-color: #42A0E4;
 }
-
-.checkbox {
-    appearance: none;
-    background: #000;
-}

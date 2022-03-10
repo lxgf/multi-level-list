@@ -43,9 +43,15 @@
     align-items: center;
     font-weight: 500;
 }
+
 .arrow {
     transition: .3s ease;
     cursor: pointer;
+    opacity: 95%;
+}
+
+.arrow:hover {
+    filter: brightness(60%);
 }
 
 .rotate {

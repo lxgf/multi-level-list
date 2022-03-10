@@ -20,7 +20,7 @@ const List = props => {
             if (listDataItem.list === false) {
                 listDataItem.isChecked = !listDataItem.isChecked;
             } else {
-                checkEmbeddedList(embeddedListIndex, index)
+                console.log('123')
             }
         })
         await setListData(newListData)

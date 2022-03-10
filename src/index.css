@@ -9,10 +9,16 @@ body {
   height: 100vh;
   justify-content: center;
   align-items: center;
-  background: #FFDC42;
+  color: #ffffff95;
+  background: #171A3B;
+  background-image: url('List/assets/images/background.svg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
 }
 
 .app>ul {
-  width: 300px;
+  width: 90vw;
+  max-width: 320px;
   user-select: none;
 }

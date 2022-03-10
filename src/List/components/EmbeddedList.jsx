@@ -16,17 +16,14 @@ const EmbeddedList = props => {
                      }}
                 />
                 {props.text}
-                <label className={style.label}>
-                    <input
-                        onChange={() => props.checkList(props.index)}
-                        type="checkbox"
-                        className={style.checkbox}
-                        checked={props.isChecked}
-                        ref={el => {
-                            el && (props.isChecked === 2 ? el.indeterminate = true : el.indeterminate = false)
-                        }}
-                    />
-                </label>
+                <input
+                    onChange={() => props.checkList(props.index)}
+                    type="checkbox"
+                    checked={props.isChecked}
+                    ref={el => {
+                        el && (props.isChecked === 2 ? el.indeterminate = true : el.indeterminate = false)
+                    }}
+                />
             </div>
             <ul className={style.list}>
                 {isMaximized &&

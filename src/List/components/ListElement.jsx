@@ -7,7 +7,6 @@ const ListElement = props => {
             <span>{props.text}</span>
             <input
                 type="checkbox"
-                className={style.checkbox}
                 checked={props.isChecked}
                 onChange={() => props.check(props.index)}
             />

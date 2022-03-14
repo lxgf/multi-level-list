@@ -2,7 +2,10 @@
     display: flex;
     flex-direction: column;
     margin-left: 1rem;
-    background: #EDEDED;
+    background: white;
+    color: #4d4d4d;
+    border-radius: .5rem;
+    gap: .6rem;
 }
 
 .list__header {
@@ -10,9 +13,9 @@
     align-items: center;
     justify-content: space-between;
     padding: .4rem .8rem;
-    background: #3299CD;
+    background: #7B61F3;
     color: white;
-    border-bottom: 2px solid #2a82b0;
+    border-radius: .5rem;
 }
 
 .list__showBtn {

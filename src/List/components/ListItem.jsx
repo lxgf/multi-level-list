@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import listItemStyle from '../assets/styles/listItem.module.css'
 
-const ListItem = ({value, checkPrev}) => {
+const ListItem = ({value, checkPrev, index}) => {
     const [checkedStatus, setCheckedStatus] = useState(false)
 
     return (
@@ -14,11 +14,11 @@ const ListItem = ({value, checkPrev}) => {
                     if (typeof checkPrev !== 'undefined')
                         if (checkedStatus) {
                             setCheckedStatus(false)
-                            checkPrev(false)
+                            checkPrev(false, index)
                         } else {
                             setCheckedStatus(true)
-                            checkPrev(true)
-                        }
+                            checkPrev(true, index)
+                    }
                 }}
             />
             <div>{value}</div>

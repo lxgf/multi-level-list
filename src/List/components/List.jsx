@@ -3,38 +3,53 @@ import ListItem from "./ListItem";
 import listStyle from '../assets/styles/list.module.css'
 import showBtn from '../assets/images/showBtn.svg'
 
-const List = ({title, data, checkPrev}) => {
+const List = ({title, data, checkPrev, index}) => {
     const [showStatus, setShowStatus] = useState(false)
     const [checkedStatus, setCheckedStatus] = useState(false)
     const [indeterminateStatus, setIndeterminateStatus] = useState(false)
+    const [checkedIndexes, setCheckIndexes] = useState([])
 
     const checkboxesCount = data.length
     const [checkedCount, setCheckedCount] = useState(0)
 
+
     useEffect(() => {
-        const checkHigh = () => {
-            if (0 < checkedCount < checkboxesCount) {
+        const checkHigh = (checked, all) => {
+            if (0 < checked < all) {
                 setCheckedStatus(false)
                 setIndeterminateStatus(true)
+
+                typeof checkPrev === 'function' && checkPrev(false, index)
             }
-            if (checkedCount === 0) {
+            if (checked === 0) {
                 setCheckedStatus(false)
                 setIndeterminateStatus(false)
+
+                typeof checkPrev === 'function' && checkPrev(false, index)
             }
-            if (checkedCount === checkboxesCount) {
+            if (checked === all) {
                 setCheckedStatus(true)
                 setIndeterminateStatus(false)
+
+                typeof checkPrev === 'function' && checkPrev(true, index)
             }
         }
-        checkHigh()
-    }, [checkboxesCount, checkedCount])
+        checkHigh(checkedCount, checkboxesCount)
+    }, [checkedCount, checkboxesCount])
 
-    const check = status => {
-        if (status) {
+    const check = (status, checkIndex) => {
+
+        let newCheckedIndexes = [...checkedIndexes]
+
+        if (status && checkedIndexes.indexOf(checkIndex) === -1) {
             setCheckedCount(checkedCount + 1)
-        } else if (!status) {
+            newCheckedIndexes.push(checkIndex)
+        } else if (!status && checkedIndexes.indexOf(checkIndex) !== -1 ) {
             setCheckedCount(checkedCount - 1)
+            newCheckedIndexes.splice(checkedIndexes.indexOf(checkIndex), 1)
         }
+
+        setCheckIndexes(newCheckedIndexes)
     }
 
     return (
@@ -46,14 +61,16 @@ const List = ({title, data, checkPrev}) => {
                     ref={el => {
                         el && (indeterminateStatus ? el.indeterminate = true : el.indeterminate = false)
                     }}
-                    onChange={() => {
-                        if (typeof checkPrev !== 'undefined')
+                    onChange={async () => {
+                        if (typeof checkPrev === 'function')
                             if (checkedStatus) {
                                 setCheckedStatus(false)
-                                checkPrev(false)
+                                setIndeterminateStatus(false)
+                                checkPrev(false, index)
                             } else {
                                 setCheckedStatus(true)
-                                checkPrev(true)
+                                setIndeterminateStatus(false)
+                                checkPrev(true, index)
                             }
                         else {
                             setCheckedStatus(!checkedStatus)
@@ -74,9 +91,9 @@ const List = ({title, data, checkPrev}) => {
             {
                 showStatus && data.map((dataItem, key) => {
                     if (dataItem.hasOwnProperty('childs'))
-                        return <List key={key} checkPrev={check} title={dataItem.value} data={dataItem.childs} />
+                        return <List key={key} index={key} checkPrev={check} title={dataItem.value} data={dataItem.childs} />
                     else
-                        return <ListItem key={key} checkPrev={check} value={dataItem.value} />
+                        return <ListItem key={key} index={key} checkPrev={check} value={dataItem.value} />
                 })
             }
         </ul>

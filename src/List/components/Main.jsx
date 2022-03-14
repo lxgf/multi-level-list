@@ -9,7 +9,7 @@ const Main = ({data}) => {
                 Multi-level List
             </header>
             <div className={mainStyle.listContainer}>
-                <List title={'Main list'} data={data} />
+                <List title={'Main list'} data={data} index={0} />
             </div>
         </div>
     );

@@ -1,0 +1,47 @@
+[
+  {
+    "value": "Some list",
+    "childs": [
+      {
+        "value": "Some text"
+      },
+      {
+        "value": "Some text"
+      },
+      {
+        "value": "Some text"
+      }
+    ]
+  },
+  {
+    "value": "Some text"
+  },
+  {
+    "value": "Some text"
+  },
+  {
+    "value": "Some list",
+    "childs": [
+      {
+        "value": "Some text"
+      },
+      {
+        "value": "Some text"
+      },
+      {
+        "value": "Some list",
+        "childs": [
+          {
+            "value": "Some text"
+          },
+          {
+            "value": "Some text"
+          },
+          {
+            "value": "Some text"
+          }
+        ]
+      }
+    ]
+  }
+]

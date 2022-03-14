@@ -4,21 +4,15 @@
   box-sizing: border-box;
 }
 
-body {
-  display: flex;
-  height: 100vh;
-  justify-content: center;
-  align-items: center;
-  color: #ffffff95;
-  background: #171A3B;
-  background-image: url('List/assets/images/background.svg');
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center;
+html {
+  font-size: 10px;
 }
 
-.app>ul {
-  width: 90vw;
-  max-width: 320px;
-  user-select: none;
+body {
+  background: #F6F6F6;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 100vh;
 }

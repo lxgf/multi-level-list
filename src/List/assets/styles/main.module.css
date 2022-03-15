@@ -1,14 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&display=swap');
 
 ::selection {
-    background: #3299CD;
-    color: #F6F6F6;
+    background: #f5d6ff;
+    color: #7B61F3;
 }
 
 .main {
     font-size: 1.6rem;
     font-family: 'Fredoka', sans-serif;
-    background: #180F3E;
+    background: #261862;
     width: 260px;
     border-radius: 1rem;
 }

@@ -9,7 +9,7 @@ html {
 }
 
 body {
-  background: #050420;
+  background: #050420 linear-gradient(0deg, #10002FFF 0%, #050420FF 20%);;
   display: flex;
   justify-content: center;
   align-items: center;

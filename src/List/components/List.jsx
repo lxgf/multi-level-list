@@ -3,7 +3,7 @@ import ListItem from "./ListItem";
 import listStyle from '../assets/styles/list.module.css'
 import showBtn from '../assets/images/showBtn.svg'
 
-const List = ({title, data, checkPrev, index}) => {
+const List = ({title, data, checkPrev, checkedIndexesPrev, index}) => {
     const [showStatus, setShowStatus] = useState(false)
     const [checkedStatus, setCheckedStatus] = useState(false)
     const [indeterminateStatus, setIndeterminateStatus] = useState(false)
@@ -11,7 +11,6 @@ const List = ({title, data, checkPrev, index}) => {
 
     const checkboxesCount = data.length
     const [checkedCount, setCheckedCount] = useState(0)
-
 
     useEffect(() => {
         const checkHigh = (checked, all) => {
@@ -36,6 +35,17 @@ const List = ({title, data, checkPrev, index}) => {
         }
         checkHigh(checkedCount, checkboxesCount)
     }, [checkedCount, checkboxesCount])
+
+
+    useEffect(() => {
+        if (typeof checkedIndexesPrev !== 'undefined') {
+            console.log(checkedIndexesPrev)
+            if (checkedIndexesPrev === -1)
+                setCheckedStatus(false)
+            if (checkedIndexesPrev !== -1)
+                setCheckedStatus(true)
+        }
+    }, [checkedIndexesPrev])
 
     const check = (status, checkIndex) => {
 
@@ -91,9 +101,9 @@ const List = ({title, data, checkPrev, index}) => {
             {
                 showStatus && data.map((dataItem, key) => {
                     if (dataItem.hasOwnProperty('childs'))
-                        return <List key={key} index={key} checkPrev={check} title={dataItem.value} data={dataItem.childs} />
+                        return <List key={key} index={key} checkPrev={check} checkedIndexesPrev={checkedIndexes.indexOf(key)} title={dataItem.value} data={dataItem.childs} />
                     else
-                        return <ListItem key={key} index={key} checkPrev={check} value={dataItem.value} />
+                        return <ListItem key={key} index={key} checkPrev={check} checkedIndexesPrev={checkedIndexes.indexOf(key)} value={dataItem.value} />
                 })
             }
         </ul>

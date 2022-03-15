@@ -9,7 +9,12 @@ const Main = ({data}) => {
                 Multi-level List
             </header>
             <div className={mainStyle.listContainer}>
-                <List title={'Main list'} data={data} index={0} />
+                <List
+                    title={'Main list'}
+                    data={data}
+                    index={0}
+                    isShowed={true}
+                />
             </div>
         </div>
     );

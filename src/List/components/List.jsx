@@ -34,7 +34,7 @@ const List = ({title, data, checkPrev, checkFromPrev, isShowed, index}) => {
             }
         }
         checkHigh(checkedIndexes.length, checkboxesCount)
-    }, [checkedIndexes, checkboxesCount])
+    }, [checkedIndexes])
 
     useEffect(() => {
         const checkLow = status => {
@@ -55,7 +55,7 @@ const List = ({title, data, checkPrev, checkFromPrev, isShowed, index}) => {
 
         checkLow(checkFromPrev)
         typeof checkFromPrev === "boolean" && setCheckLowStatus(checkFromPrev)
-    }, [checkFromPrev])
+    }, [checkFromPrev, checkboxesCount])
 
     const check = (status, checkIndex) => {
         setCheckLowStatus(undefined)
@@ -70,10 +70,11 @@ const List = ({title, data, checkPrev, checkFromPrev, isShowed, index}) => {
         } else if (status === 'indeterminate') {
             setCheckedStatus(false)
             setIndeterminateStatus(true)
-            checkedIndexes.includes(checkIndex) && newCheckedIndexes.splice(checkedIndexes.indexOf(checkIndex), 1)
+            !checkedIndexes.includes(checkIndex) && newCheckedIndexes.push(checkIndex)
         }
 
         setCheckedIndexes(newCheckedIndexes)
+
     }
 
     const listCheckboxHandle = () => {

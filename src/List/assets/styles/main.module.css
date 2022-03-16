@@ -36,3 +36,7 @@
 ul {
     list-style: none;
 }
+
+input[type="checkbox"] {
+    cursor: pointer;
+}

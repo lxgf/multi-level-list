@@ -19,7 +19,7 @@ const ListItem = ({value, checkPrev, isShowed, checkFromPrev, index}) => {
     }, [checkFromPrev])
 
     const itemCheckboxHandle = () => {
-        if (typeof checkPrev !== 'undefined')
+        if (typeof checkPrev === 'function')
             if (checkedStatus) {
                 setCheckedStatus(false)
                 checkPrev(false, index)

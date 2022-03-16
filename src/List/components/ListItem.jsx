@@ -6,11 +6,13 @@ const ListItem = ({value, checkPrev, isShowed, checkFromPrev, index}) => {
 
     useEffect(() => {
         const checkLow = status => {
-            if (status) {
-                setCheckedStatus(true)
-            }
-            if (!status) {
-                setCheckedStatus(false)
+            if (typeof status === "boolean") {
+                if (status) {
+                    setCheckedStatus(true)
+                }
+                if (!status) {
+                    setCheckedStatus(false)
+                }
             }
         }
         checkLow(checkFromPrev)

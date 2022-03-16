@@ -38,16 +38,18 @@ const List = ({title, data, checkPrev, checkFromPrev, isShowed, index}) => {
 
     useEffect(() => {
         const checkLow = status => {
-            if (status) {
-                setCheckedStatus(true)
-                let newCheckedIndexes = []
-                for (let index = 0; index < checkboxesCount; index++)
-                    newCheckedIndexes.push(index)
-                setCheckIndexes(newCheckedIndexes)
-            }
-            if (!status) {
-                setCheckedStatus(false)
-                setCheckIndexes([])
+            if (typeof status === "boolean") {
+                if (status) {
+                    setCheckedStatus(true)
+                    let newCheckedIndexes = []
+                    for (let index = 0; index < checkboxesCount; index++)
+                        newCheckedIndexes.push(index)
+                    setCheckIndexes(newCheckedIndexes)
+                }
+                if (!status) {
+                    setCheckedStatus(false)
+                    setCheckIndexes([])
+                }
             }
         }
 
@@ -56,6 +58,8 @@ const List = ({title, data, checkPrev, checkFromPrev, isShowed, index}) => {
     }, [checkFromPrev])
 
     const check = (status, checkIndex) => {
+        setCheckLowStatus(undefined)
+
         let newCheckedIndexes = [...checkedIndexes]
 
         if (status && !checkedIndexes.includes(checkIndex)) {
@@ -124,7 +128,7 @@ const List = ({title, data, checkPrev, checkFromPrev, isShowed, index}) => {
                             key={key}
                             index={key}
                             isShowed={showStatus}
-                            checkFromPrev={typeof checkLowStatus ==='boolean' && checkLowStatus}
+                            checkFromPrev={checkLowStatus}
                             checkPrev={check}
                             title={dataItem.value}
                             data={dataItem.childs}
@@ -134,7 +138,7 @@ const List = ({title, data, checkPrev, checkFromPrev, isShowed, index}) => {
                             key={key}
                             index={key}
                             isShowed={showStatus}
-                            checkFromPrev={typeof checkLowStatus ==='boolean' && checkLowStatus}
+                            checkFromPrev={checkLowStatus}
                             checkPrev={check}
                             value={dataItem.value}
                         />

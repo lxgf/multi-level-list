@@ -7,7 +7,7 @@ const List = ({title, data, checkPrev, checkFromPrev, isShowed, index}) => {
     const [showStatus, setShowStatus] = useState(false)
     const [checkedStatus, setCheckedStatus] = useState(false)
     const [indeterminateStatus, setIndeterminateStatus] = useState(false)
-    const [checkedIndexes, setCheckIndexes] = useState([])
+    const [checkedIndexes, setCheckedIndexes] = useState([])
     const [checkLowStatus, setCheckLowStatus] = useState(false)
 
     const checkboxesCount = data.length
@@ -44,11 +44,11 @@ const List = ({title, data, checkPrev, checkFromPrev, isShowed, index}) => {
                     let newCheckedIndexes = []
                     for (let index = 0; index < checkboxesCount; index++)
                         newCheckedIndexes.push(index)
-                    setCheckIndexes(newCheckedIndexes)
+                    setCheckedIndexes(newCheckedIndexes)
                 }
                 if (!status) {
                     setCheckedStatus(false)
-                    setCheckIndexes([])
+                    setCheckedIndexes([])
                 }
             }
         }
@@ -67,7 +67,7 @@ const List = ({title, data, checkPrev, checkFromPrev, isShowed, index}) => {
         } else if (!status && checkedIndexes.includes(checkIndex))
             newCheckedIndexes.splice(checkedIndexes.indexOf(checkIndex), 1)
 
-        setCheckIndexes(newCheckedIndexes)
+        setCheckedIndexes(newCheckedIndexes)
     }
 
     const listCheckboxHandle = () => {
@@ -78,7 +78,7 @@ const List = ({title, data, checkPrev, checkFromPrev, isShowed, index}) => {
                 checkPrev(true, index)
         }
         if (checkedStatus) {
-            setCheckIndexes([])
+            setCheckedIndexes([])
 
             setCheckedStatus(false)
             setIndeterminateStatus(false)
@@ -88,7 +88,7 @@ const List = ({title, data, checkPrev, checkFromPrev, isShowed, index}) => {
             let newCheckedIndexes = []
             for (let index = 0; index < checkboxesCount; index++)
                 newCheckedIndexes.push(index)
-            setCheckIndexes(newCheckedIndexes)
+            setCheckedIndexes(newCheckedIndexes)
 
             setCheckedStatus(true)
             setIndeterminateStatus(false)

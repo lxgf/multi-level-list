@@ -18,7 +18,7 @@ const List = ({title, data, checkPrev, checkFromPrev, isShowed, index}) => {
                 setCheckedStatus(false)
                 setIndeterminateStatus(true)
 
-                typeof checkPrev === 'function' && checkPrev(false, index)
+                typeof checkPrev === 'function' && checkPrev('indeterminate', index)
             }
             if (checked === 0) {
                 setCheckedStatus(false)
@@ -62,10 +62,16 @@ const List = ({title, data, checkPrev, checkFromPrev, isShowed, index}) => {
 
         let newCheckedIndexes = [...checkedIndexes]
 
-        if (status && !checkedIndexes.includes(checkIndex)) {
-            newCheckedIndexes.push(checkIndex)
-        } else if (!status && checkedIndexes.includes(checkIndex))
-            newCheckedIndexes.splice(checkedIndexes.indexOf(checkIndex), 1)
+        if (typeof status === 'boolean'){
+            if (status && !checkedIndexes.includes(checkIndex)) {
+                newCheckedIndexes.push(checkIndex)
+            } else if (!status && checkedIndexes.includes(checkIndex))
+                newCheckedIndexes.splice(checkedIndexes.indexOf(checkIndex), 1)
+        } else if (status === 'indeterminate') {
+            setCheckedStatus(false)
+            setIndeterminateStatus(true)
+            checkedIndexes.includes(checkIndex) && newCheckedIndexes.splice(checkedIndexes.indexOf(checkIndex), 1)
+        }
 
         setCheckedIndexes(newCheckedIndexes)
     }

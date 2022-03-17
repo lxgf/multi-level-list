@@ -3,21 +3,37 @@ import ListItem from "./ListItem";
 import listStyle from '../assets/styles/list.module.css'
 import showBtn from '../assets/images/showBtn.svg'
 
-const List = ({title, data, checkPrev, checkFromPrev, isShowed, index}) => {
+const List = ({title, data, checkPrev, checkFromPrev, isShowed, index, layer}) => {
     const [showStatus, setShowStatus] = useState(false)
     const [checkedStatus, setCheckedStatus] = useState(false)
     const [indeterminateStatus, setIndeterminateStatus] = useState(false)
     const [checkedIndexes, setCheckedIndexes] = useState([])
     const [checkLowStatus, setCheckLowStatus] = useState(false)
 
-    const checkboxesCount = data.length
+
+    const getCountElements = () => {
+        let counter = 0;
+        let test = (element) => {
+            counter++;
+            if (element.hasOwnProperty('childs')) {
+                element.childs.forEach(test);
+            }
+        }
+        data.forEach(test)
+        return counter;
+    }
+    const checkboxesCount = getCountElements();
+
 
     useEffect(() => {
         const checkHigh = (checked, all) => {
-            if (0 < checked < all) {
+            console.log("index" + ' = ' +index+ ' layer' + layer + " all = " + all + " checked = " + checked);
+            console.log("_____________");
+            if (0 < checked && checked < all) {
                 setCheckedStatus(false)
                 setIndeterminateStatus(true)
 
+                console.log('????')
                 typeof checkPrev === 'function' && checkPrev('indeterminate', index)
             }
             if (checked === 0) {
@@ -42,8 +58,16 @@ const List = ({title, data, checkPrev, checkFromPrev, isShowed, index}) => {
                 if (status) {
                     setCheckedStatus(true)
                     let newCheckedIndexes = []
-                    for (let index = 0; index < checkboxesCount; index++)
-                        newCheckedIndexes.push(index)
+                    let test = (element) =>{
+                        newCheckedIndexes.push(element.index);
+                        if (element.hasOwnProperty('childs')) {
+                            element.childs.forEach(test);
+                        }
+                    }
+                    data.forEach(test);
+                    console.log(newCheckedIndexes);
+                    // for (let index = 0; index < checkboxesCount; index++)
+                    //     newCheckedIndexes.push(index)
                     setCheckedIndexes(newCheckedIndexes)
                 }
                 if (!status) {
@@ -63,6 +87,7 @@ const List = ({title, data, checkPrev, checkFromPrev, isShowed, index}) => {
         let newCheckedIndexes = [...checkedIndexes]
 
         if (typeof status === 'boolean'){
+            console.log('boolean', status, checkedIndexes);
             if (status && !checkedIndexes.includes(checkIndex)) {
                 newCheckedIndexes.push(checkIndex)
             } else if (!status && checkedIndexes.includes(checkIndex))
@@ -70,9 +95,11 @@ const List = ({title, data, checkPrev, checkFromPrev, isShowed, index}) => {
         } else if (status === 'indeterminate') {
             setCheckedStatus(false)
             setIndeterminateStatus(true)
-            !checkedIndexes.includes(checkIndex) && newCheckedIndexes.push(checkIndex)
+            !checkedIndexes.includes(checkIndex) && newCheckedIndexes.splice(checkedIndexes.indexOf(checkIndex), 1)
+            checkedIndexes.includes(checkIndex) && newCheckedIndexes.push(checkIndex)
         }
 
+        console.log('new array = '+newCheckedIndexes+' check = ' + checkIndex, status);
         setCheckedIndexes(newCheckedIndexes)
 
     }
@@ -93,8 +120,14 @@ const List = ({title, data, checkPrev, checkFromPrev, isShowed, index}) => {
             setCheckLowStatus(false)
         } else {
             let newCheckedIndexes = []
-            for (let index = 0; index < checkboxesCount; index++)
-                newCheckedIndexes.push(index)
+            let test = (element) => {
+                newCheckedIndexes.push(element.index);
+                if (element.hasOwnProperty('childs')) {
+                    element.childs.forEach(test);
+                }
+            }
+            data.forEach(test);
+            console.log(newCheckedIndexes);
             setCheckedIndexes(newCheckedIndexes)
 
             setCheckedStatus(true)
@@ -132,22 +165,23 @@ const List = ({title, data, checkPrev, checkFromPrev, isShowed, index}) => {
                 data.map((dataItem, key) => {
                     if (dataItem.hasOwnProperty('childs'))
                         return <List
-                            key={key}
-                            index={key}
-                            isShowed={showStatus}
+                            key={dataItem.index}
+                            index={dataItem.index}
+                            isShowed={true}
                             checkFromPrev={checkLowStatus}
                             checkPrev={check}
-                            title={dataItem.value}
+                            layer={layer + 1}
+                            title={dataItem.value + " " + dataItem.index}
                             data={dataItem.childs}
                         />
                     else
                         return <ListItem
-                            key={key}
-                            index={key}
-                            isShowed={showStatus}
+                            key={dataItem.index}
+                            index={dataItem.index}
+                            isShowed={true}
                             checkFromPrev={checkLowStatus}
                             checkPrev={check}
-                            value={dataItem.value}
+                            value={dataItem.value + " " + dataItem.index}
                         />
                 })
             }

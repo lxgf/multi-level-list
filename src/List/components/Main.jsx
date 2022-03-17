@@ -13,6 +13,7 @@ const Main = ({data}) => {
                     title={'Main list'}
                     data={data}
                     index={0}
+                    layer={0}
                     isShowed={true}
                 />
             </div>

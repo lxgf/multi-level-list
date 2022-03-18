@@ -1,57 +1,44 @@
 [
   {
     "value": "Some list",
-    "index": 1,
     "childs": [
       {
-        "value": "Some text",
-        "index": 2
+        "value": "Some text"
       },
       {
-        "value": "Some text",
-        "index": 3
+        "value": "Some text"
       },
       {
-        "value": "Some text",
-        "index": 4
+        "value": "Some text"
       }
     ]
   },
   {
-    "value": "Some text",
-    "index": 5
+    "value": "Some text"
   },
   {
-    "value": "Some text",
-    "index": 6
+    "value": "Some text"
   },
   {
     "value": "Some list",
-    "index": 7,
     "childs": [
       {
-        "value": "Some text",
-        "index": 8
+        "value": "Some text"
       },
       {
-        "value": "Some text",
-        "index": 9
+        "value": "Some text"
       },
       {
         "value": "Some list",
-        "index": 10,
         "childs": [
           {
-            "value": "Some text",
-            "index": 11
+            "value": "Some text"
           },
           {
-            "value": "Some text",
-            "index": 12
+            "value": "Some text"
           },
           {
-            "value": "Some text",
-            "index": 13
+            "value": "Some text"
           }
         ]
       }

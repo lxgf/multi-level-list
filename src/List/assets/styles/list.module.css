@@ -8,7 +8,7 @@
     gap: .6rem;
 }
 
-.list__header {
+.header {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -18,16 +18,16 @@
     border-radius: .5rem;
 }
 
-.list__showBtn {
+.showBtn {
     opacity: 75%;
     cursor: pointer;
     transition: .3s ease-out;
 }
 
-.list__showBtn:hover {
+.showBtn:hover {
     opacity: 100%;
 }
 
-.list__showBtn.rotate {
+.showBtn.rotate {
     transform: rotate(180deg);
 }

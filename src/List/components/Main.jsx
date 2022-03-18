@@ -5,15 +5,15 @@ import List from "./List";
 const Main = ({data}) => {
     return (
         <div className={mainStyle.main}>
-            <header className={mainStyle.main__header}>
+            <header className={mainStyle.header}>
                 Multi-level List
             </header>
             <div className={mainStyle.listContainer}>
                 <List
                     title={'Main list'}
                     data={data}
-                    index={0}
-                    layer={0}
+                    key={'0'}
+                    index={'0'}
                     isShowed={true}
                 />
             </div>

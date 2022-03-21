@@ -5,8 +5,10 @@ import showBtn from '../assets/images/showBtn.svg'
 
 const List = ({title, data, isShowed, index, checkParent}) => {
     const [showStatus, setShowStatus] = useState(false)
-    const [indeterminateStatus, setIndeterminateStatus] = useState(false)
-    const [checkedStatus, setCheckedStatus] = useState(false)
+    const [checkedStatus, setCheckedStatus] = useState({
+        isChecked: false,
+        isIndeterminate: false
+    })
     const [checkedIndexes, setCheckedIndexes] = useState([])
     const [checkboxesCount, setCheckboxesCount] = useState()
 
@@ -23,24 +25,21 @@ const List = ({title, data, isShowed, index, checkParent}) => {
         setCheckboxesCount(countCheckboxes(data))
     }, [data])
 
-    useEffect(() => {
+    const indexesHaveChanged = () => {
         const checkedCount = checkedIndexes.length
 
         if (0 < checkedCount < checkboxesCount) {
-            setCheckedStatus(false)
-            setIndeterminateStatus(true)
+            setCheckedStatus({isChecked: false, isIndeterminate: true})
         }
         if (checkedCount === 0) {
-            setCheckedStatus(false)
-            setIndeterminateStatus(false)
+            setCheckedStatus({isChecked: false, isIndeterminate: false})
         }
         if (checkedCount === checkboxesCount) {
-            setCheckedStatus(true)
-            setIndeterminateStatus(false)
+            setCheckedStatus({isChecked: true, isIndeterminate: false})
         }
 
         typeof checkParent === 'function' && checkParent([...checkedIndexes])
-    }, [checkedIndexes, data.length])
+    }
 
     const showBtnHandle = e => {
         e.target.classList.toggle(listStyle.rotate)
@@ -56,6 +55,8 @@ const List = ({title, data, isShowed, index, checkParent}) => {
                 newCheckedIndexes.push(index)
             setCheckedIndexes(newCheckedIndexes)
         })
+
+        indexesHaveChanged()
     }
 
     return (
@@ -64,9 +65,9 @@ const List = ({title, data, isShowed, index, checkParent}) => {
                 <label>
                     <input
                         type="checkbox"
-                        checked={checkedStatus}
+                        checked={checkedStatus.isChecked}
                         ref={el => {
-                            el && (indeterminateStatus ? el.indeterminate = true : el.indeterminate = false)
+                            el && (checkedStatus.isIndeterminate ? el.indeterminate = true : el.indeterminate = false)
                         }}
                     />
                     {title}

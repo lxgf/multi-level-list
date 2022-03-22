@@ -25,11 +25,6 @@ const List = ({title, data, isShowed, index, checkParent}) => {
         setCheckboxesCount(countCheckboxes(data))
     }, [data])
 
-    const checkParentCallback = useCallback(() => {
-        if (typeof checkParent === 'function')
-            checkParent([...checkedIndexes])
-    }, [checkedIndexes])
-
     useEffect(() => {
         const checkedCount = checkedIndexes.length
 
@@ -42,8 +37,7 @@ const List = ({title, data, isShowed, index, checkParent}) => {
         if (checkedCount === checkboxesCount) {
             setCheckedStatus({isChecked: true, isIndeterminate: false})
         }
-        checkParentCallback()
-    }, [checkParentCallback, checkboxesCount, checkedIndexes])
+    }, [checkboxesCount, checkedIndexes])
 
     const showBtnHandle = e => {
         e.target.classList.toggle(listStyle.rotate)
@@ -55,10 +49,12 @@ const List = ({title, data, isShowed, index, checkParent}) => {
         indexes.forEach(index => {
             if (newCheckedIndexes.includes(index))
                 newCheckedIndexes.splice(newCheckedIndexes.indexOf(index), 1)
-            if (!newCheckedIndexes.includes(index))
+            else if (!newCheckedIndexes.includes(index))
                 newCheckedIndexes.push(index)
         })
         await setCheckedIndexes(newCheckedIndexes)
+        if (typeof checkParent === 'function')
+            checkParent([...newCheckedIndexes])
     }
 
     return (

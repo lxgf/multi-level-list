@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import ListItem from "./ListItem";
 import listStyle from '../assets/styles/list.module.css'
 import showBtn from '../assets/images/showBtn.svg'
@@ -25,7 +25,12 @@ const List = ({title, data, isShowed, index, checkParent}) => {
         setCheckboxesCount(countCheckboxes(data))
     }, [data])
 
-    const indexesHaveChanged = () => {
+    const checkParentCallback = useCallback(() => {
+        if (typeof checkParent === 'function')
+            checkParent([...checkedIndexes])
+    }, [checkedIndexes])
+
+    useEffect(() => {
         const checkedCount = checkedIndexes.length
 
         if (0 < checkedCount < checkboxesCount) {
@@ -37,26 +42,23 @@ const List = ({title, data, isShowed, index, checkParent}) => {
         if (checkedCount === checkboxesCount) {
             setCheckedStatus({isChecked: true, isIndeterminate: false})
         }
-
-        typeof checkParent === 'function' && checkParent([...checkedIndexes])
-    }
+        checkParentCallback()
+    }, [checkParentCallback, checkboxesCount, checkedIndexes])
 
     const showBtnHandle = e => {
         e.target.classList.toggle(listStyle.rotate)
         setShowStatus(!showStatus)
     }
 
-    const checkFromLow = indexes => {
+    const checkFromLow = async indexes => {
+        let newCheckedIndexes = [...checkedIndexes]
         indexes.forEach(index => {
-            let newCheckedIndexes = [...checkedIndexes]
             if (newCheckedIndexes.includes(index))
                 newCheckedIndexes.splice(newCheckedIndexes.indexOf(index), 1)
-            else if (!newCheckedIndexes.includes(index))
+            if (!newCheckedIndexes.includes(index))
                 newCheckedIndexes.push(index)
-            setCheckedIndexes(newCheckedIndexes)
         })
-
-        indexesHaveChanged()
+        await setCheckedIndexes(newCheckedIndexes)
     }
 
     return (
@@ -66,6 +68,7 @@ const List = ({title, data, isShowed, index, checkParent}) => {
                     <input
                         type="checkbox"
                         checked={checkedStatus.isChecked}
+                        onChange={() => false}
                         ref={el => {
                             el && (checkedStatus.isIndeterminate ? el.indeterminate = true : el.indeterminate = false)
                         }}

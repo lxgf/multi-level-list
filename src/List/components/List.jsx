@@ -45,11 +45,12 @@ const List = ({title, data, isShowed, path, checkInParent}) => {
     }
 
     const checkFromLow = (status, path) => {
+        console.log(status, path)
         let newCheckedIndexes = [...checkedIndexes]
 
-        if (status && !newCheckedIndexes.includes(path))
+        if (status)
             newCheckedIndexes.push(path)
-        else if (!status && newCheckedIndexes.includes(path))
+        else if (!status)
             newCheckedIndexes.splice(newCheckedIndexes.indexOf(path), 1)
 
         setCheckedIndexes(newCheckedIndexes)

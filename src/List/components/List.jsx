@@ -1,9 +1,9 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import ListItem from "./ListItem";
 import listStyle from '../assets/styles/list.module.css'
 import showBtn from '../assets/images/showBtn.svg'
 
-const List = ({title, data, isShowed, index, checkParent}) => {
+const List = ({title, data, isShowed, path, checkInParent}) => {
     const [showStatus, setShowStatus] = useState(false)
     const [checkedStatus, setCheckedStatus] = useState({
         isChecked: false,
@@ -44,17 +44,21 @@ const List = ({title, data, isShowed, index, checkParent}) => {
         setShowStatus(!showStatus)
     }
 
-    const checkFromLow = async indexes => {
+    const checkFromLow = (status, path) => {
         let newCheckedIndexes = [...checkedIndexes]
-        indexes.forEach(index => {
-            if (newCheckedIndexes.includes(index))
-                newCheckedIndexes.splice(newCheckedIndexes.indexOf(index), 1)
-            else if (!newCheckedIndexes.includes(index))
-                newCheckedIndexes.push(index)
-        })
-        await setCheckedIndexes(newCheckedIndexes)
-        if (typeof checkParent === 'function')
-            checkParent([...newCheckedIndexes])
+
+        if (status && !newCheckedIndexes.includes(path))
+            newCheckedIndexes.push(path)
+        else if (!status && newCheckedIndexes.includes(path))
+            newCheckedIndexes.splice(newCheckedIndexes.indexOf(path), 1)
+
+        setCheckedIndexes(newCheckedIndexes)
+
+        if (typeof checkInParent === 'function') {
+            checkInParent(status, path)
+            if (newCheckedIndexes.length === checkboxesCount)
+                checkInParent(status, 'test')
+        }
     }
 
     return (
@@ -82,21 +86,21 @@ const List = ({title, data, isShowed, index, checkParent}) => {
                 data.map((dataItem, key) => {
                     if (dataItem.hasOwnProperty('childs'))
                         return <List
-                            key={index+'-'+key}
-                            index={index+'-'+key}
+                            key={path+'-'+key}
+                            path={path+'-'+key}
                             isShowed={showStatus}
                             title={dataItem.value}
                             data={dataItem.childs}
-                            checkParent={checkFromLow}
+                            checkInParent={checkFromLow}
                         />
                     else
                         return <ListItem
-                            key={index+'-'+key}
-                            index={index+'-'+key}
+                            key={path+'-'+key}
+                            path={path+'-'+key}
                             isShowed={showStatus}
-                            isChecked={checkedIndexes.includes(index+'-'+key)}
+                            isChecked={checkedIndexes.includes(path+'-'+key)}
                             value={dataItem.value}
-                            checkParent={checkFromLow}
+                            checkInParent={checkFromLow}
                         />
                 })
             }

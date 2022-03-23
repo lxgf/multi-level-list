@@ -1,7 +1,7 @@
 import React from 'react';
 import listItemStyle from '../assets/styles/listItem.module.css'
 
-const ListItem = ({value, isShowed, isChecked, index, checkParent}) => {
+const ListItem = ({value, isShowed, isChecked, path, checkInParent}) => {
 
     return (
         <li style={{display: isShowed ? 'flex' : 'none' }} className={listItemStyle.listItem}>
@@ -9,7 +9,7 @@ const ListItem = ({value, isShowed, isChecked, index, checkParent}) => {
                 <input
                     type="checkbox"
                     checked={isChecked}
-                    onChange={() => checkParent([index])}
+                    onChange={() => checkInParent(!isChecked, path)}
                 />
                 {value}
             </label>

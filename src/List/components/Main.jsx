@@ -13,7 +13,7 @@ const Main = ({data}) => {
                     title={'Main list'}
                     data={data}
                     key={'0'}
-                    index={'0'}
+                    path={'0'}
                     isShowed={true}
                 />
             </div>

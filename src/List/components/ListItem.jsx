@@ -9,7 +9,7 @@ const ListItem = ({value, isShowed, isChecked, path, checkInParent}) => {
                 <input
                     type="checkbox"
                     checked={isChecked}
-                    onChange={() => checkInParent(!isChecked, path)}
+                    onChange={() => checkInParent(!isChecked, [path])}
                 />
                 {value}
             </label>

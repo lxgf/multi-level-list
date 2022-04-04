@@ -3,7 +3,7 @@ import ListItem from "./ListItem";
 import listStyle from '../assets/styles/list.module.css'
 import showBtn from '../assets/images/showBtn.svg'
 
-const List = ({title, data, isShowed, path, checkInParent}) => {
+const List = ({title, data, isShowed, path, checkInParent, isChecked}) => {
     const [showStatus, setShowStatus] = useState(false)
     const [checkedStatus, setCheckedStatus] = useState({
         isChecked: false,
@@ -11,6 +11,13 @@ const List = ({title, data, isShowed, path, checkInParent}) => {
     })
     const [checkedPaths, setCheckedPaths] = useState([])
     const [checkboxesCount, setCheckboxesCount] = useState()
+
+    useEffect(() => {
+        setCheckedStatus(prevState => ({
+            isChecked: isChecked,
+            isIndeterminate: prevState.isIndeterminate
+        }))
+    },[isChecked])
 
     useEffect(() => {
         const countCheckboxes = data => {
@@ -44,14 +51,15 @@ const List = ({title, data, isShowed, path, checkInParent}) => {
         setShowStatus(!showStatus)
     }
 
-    const checkFromLow = useCallback((status, path) => {
+    const checkFromLow = useCallback((status, paths) => {
         let newCheckedPaths = [...checkedPaths]
 
         if (status) {
-            newCheckedPaths.push(path)
+            console.log(paths)
+            newCheckedPaths = newCheckedPaths.concat(paths)
         } else if (!status) {
-            newCheckedPaths.splice(newCheckedPaths.indexOf(path), 1)
-            let listIndex = path.split('-').slice(0, -1)
+            newCheckedPaths = newCheckedPaths.filter(el => !paths.includes(el));
+            let listIndex = paths[0].split('-').slice(0, -1)
             listIndex = listIndex.join('-')
             if (newCheckedPaths.includes(listIndex))
                 newCheckedPaths.splice(newCheckedPaths.indexOf(listIndex), 1)
@@ -60,7 +68,7 @@ const List = ({title, data, isShowed, path, checkInParent}) => {
         setCheckedPaths(newCheckedPaths)
 
         if (typeof checkInParent === 'function') {
-            checkInParent(status, path)
+            checkInParent(status, paths)
         }
     }, [checkInParent, checkedPaths])
 
@@ -72,18 +80,20 @@ const List = ({title, data, isShowed, path, checkInParent}) => {
 
     const checkList = status => {
         const addAllPaths = (data, currentPath) => {
+            let newPaths = []
             data.forEach((dataItem, dataItemPath) => {
-                console.log(currentPath + '-' + dataItemPath)
                 if (dataItem.hasOwnProperty('childs')) {
-                    addAllPaths(
+                    let childPaths = addAllPaths(
                         dataItem.childs,
                         (currentPath + '-' + dataItemPath)
                     )
+                    newPaths = (newPaths.concat(childPaths))
                 }
-                checkFromLow(status, (currentPath + '-' + dataItemPath))
+                newPaths.push(currentPath + '-' + dataItemPath)
             })
+            return newPaths
         }
-        addAllPaths(data, path)
+        checkFromLow(status, addAllPaths(data, path))
     }
 
     return (
@@ -114,6 +124,7 @@ const List = ({title, data, isShowed, path, checkInParent}) => {
                             key={path+'-'+key}
                             path={path+'-'+key}
                             isShowed={showStatus}
+                            isChecked={checkedPaths.includes(path+'-'+key)}
                             title={dataItem.value}
                             data={dataItem.childs}
                             checkInParent={checkFromLow}

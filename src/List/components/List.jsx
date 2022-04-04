@@ -71,16 +71,19 @@ const List = ({title, data, isShowed, path, checkInParent}) => {
     }, [checkFromLow, checkboxesCount, checkedPaths, path])
 
     const checkList = status => {
-        console.log(status)
-        if (status) {
-            for (let i = 0; i < checkboxesCount; i++) {
-                console.log(
-                    path
-                        .split('-')
-                        .concat(i)
-                        .join('-'))
-            }
+        const addAllPaths = (data, currentPath) => {
+            data.forEach((dataItem, dataItemPath) => {
+                console.log(currentPath + '-' + dataItemPath)
+                if (dataItem.hasOwnProperty('childs')) {
+                    addAllPaths(
+                        dataItem.childs,
+                        (currentPath + '-' + dataItemPath)
+                    )
+                }
+                checkFromLow(status, (currentPath + '-' + dataItemPath))
+            })
         }
+        addAllPaths(data, path)
     }
 
     return (

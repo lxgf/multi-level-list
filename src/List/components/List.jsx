@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import ListItem from "./ListItem";
 import listStyle from '../assets/styles/list.module.css'
 import showBtn from '../assets/images/showBtn.svg'
@@ -9,7 +9,7 @@ const List = ({title, data, isShowed, path, checkInParent}) => {
         isChecked: false,
         isIndeterminate: false
     })
-    const [checkedIndexes, setCheckedIndexes] = useState([])
+    const [checkedPaths, setCheckedPaths] = useState([])
     const [checkboxesCount, setCheckboxesCount] = useState()
 
     useEffect(() => {
@@ -26,7 +26,7 @@ const List = ({title, data, isShowed, path, checkInParent}) => {
     }, [data])
 
     useEffect(() => {
-        const checkedCount = checkedIndexes.length
+        const checkedCount = checkedPaths.length
 
         if (0 < checkedCount < checkboxesCount) {
             setCheckedStatus({isChecked: false, isIndeterminate: true})
@@ -34,31 +34,52 @@ const List = ({title, data, isShowed, path, checkInParent}) => {
         if (checkedCount === 0) {
             setCheckedStatus({isChecked: false, isIndeterminate: false})
         }
-        if (checkedCount === checkboxesCount) {
+        if (checkedCount === checkboxesCount+1) {
             setCheckedStatus({isChecked: true, isIndeterminate: false})
         }
-    }, [checkboxesCount, checkedIndexes])
+    }, [checkboxesCount, checkedPaths])
 
     const showBtnHandle = e => {
         e.target.classList.toggle(listStyle.rotate)
         setShowStatus(!showStatus)
     }
 
-    const checkFromLow = (status, path) => {
-        console.log(status, path)
-        let newCheckedIndexes = [...checkedIndexes]
+    const checkFromLow = useCallback((status, path) => {
+        let newCheckedPaths = [...checkedPaths]
 
-        if (status)
-            newCheckedIndexes.push(path)
-        else if (!status)
-            newCheckedIndexes.splice(newCheckedIndexes.indexOf(path), 1)
+        if (status) {
+            newCheckedPaths.push(path)
+        } else if (!status) {
+            newCheckedPaths.splice(newCheckedPaths.indexOf(path), 1)
+            let listIndex = path.split('-').slice(0, -1)
+            listIndex = listIndex.join('-')
+            if (newCheckedPaths.includes(listIndex))
+                newCheckedPaths.splice(newCheckedPaths.indexOf(listIndex), 1)
+        }
 
-        setCheckedIndexes(newCheckedIndexes)
+        setCheckedPaths(newCheckedPaths)
 
         if (typeof checkInParent === 'function') {
             checkInParent(status, path)
-            if (newCheckedIndexes.length === checkboxesCount)
-                checkInParent(status, 'test')
+        }
+    }, [checkInParent, checkedPaths])
+
+    useEffect(() => {
+        if (checkedPaths.length === checkboxesCount) {
+            checkFromLow(true, path)
+        }
+    }, [checkFromLow, checkboxesCount, checkedPaths, path])
+
+    const checkList = status => {
+        console.log(status)
+        if (status) {
+            for (let i = 0; i < checkboxesCount; i++) {
+                console.log(
+                    path
+                        .split('-')
+                        .concat(i)
+                        .join('-'))
+            }
         }
     }
 
@@ -69,7 +90,7 @@ const List = ({title, data, isShowed, path, checkInParent}) => {
                     <input
                         type="checkbox"
                         checked={checkedStatus.isChecked}
-                        onChange={() => false}
+                        onChange={() => checkList(!checkedStatus.isChecked)}
                         ref={el => {
                             el && (checkedStatus.isIndeterminate ? el.indeterminate = true : el.indeterminate = false)
                         }}
@@ -99,7 +120,7 @@ const List = ({title, data, isShowed, path, checkInParent}) => {
                             key={path+'-'+key}
                             path={path+'-'+key}
                             isShowed={showStatus}
-                            isChecked={checkedIndexes.includes(path+'-'+key)}
+                            isChecked={checkedPaths.includes(path+'-'+key)}
                             value={dataItem.value}
                             checkInParent={checkFromLow}
                         />

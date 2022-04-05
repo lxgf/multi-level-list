@@ -12,12 +12,22 @@ const List = ({title, data, isShowed, path, checkInParent, isChecked}) => {
     const [checkedPaths, setCheckedPaths] = useState([])
     const [checkboxesCount, setCheckboxesCount] = useState()
 
-    useEffect(() => {
-        setCheckedStatus(prevState => ({
-            isChecked: isChecked,
-            isIndeterminate: prevState.isIndeterminate
-        }))
-    },[isChecked])
+    const addAllPaths = useCallback((data, currentPath) => {
+        let newPaths = []
+        data.forEach((dataItem, dataItemPath) => {
+            if (dataItem.hasOwnProperty('childs')) {
+                let childPaths = addAllPaths(
+                    dataItem.childs,
+                    (currentPath + '-' + dataItemPath)
+                )
+                newPaths = (newPaths.concat(childPaths))
+            }
+            newPaths.push(currentPath + '-' + dataItemPath)
+        })
+        return newPaths
+    }, [])
+
+    const allPaths = addAllPaths(data, path)
 
     useEffect(() => {
         const countCheckboxes = data => {
@@ -55,8 +65,7 @@ const List = ({title, data, isShowed, path, checkInParent, isChecked}) => {
         let newCheckedPaths = [...checkedPaths]
 
         if (status) {
-            console.log(paths)
-            newCheckedPaths = newCheckedPaths.concat(paths)
+            newCheckedPaths = [...new Set(newCheckedPaths.concat(paths))]
         } else if (!status) {
             newCheckedPaths = newCheckedPaths.filter(el => !paths.includes(el));
             let listIndex = paths[0].split('-').slice(0, -1)
@@ -79,22 +88,13 @@ const List = ({title, data, isShowed, path, checkInParent, isChecked}) => {
     }, [checkFromLow, checkboxesCount, checkedPaths, path])
 
     const checkList = status => {
-        const addAllPaths = (data, currentPath) => {
-            let newPaths = []
-            data.forEach((dataItem, dataItemPath) => {
-                if (dataItem.hasOwnProperty('childs')) {
-                    let childPaths = addAllPaths(
-                        dataItem.childs,
-                        (currentPath + '-' + dataItemPath)
-                    )
-                    newPaths = (newPaths.concat(childPaths))
-                }
-                newPaths.push(currentPath + '-' + dataItemPath)
-            })
-            return newPaths
-        }
-        checkFromLow(status, addAllPaths(data, path))
+        checkFromLow(status, allPaths)
     }
+
+    useEffect(() => {
+        if (isChecked) setCheckedPaths(allPaths)
+        else if (typeof checkInParent === 'function') checkInParent(false, [path])
+    }, [isChecked, path])
 
     return (
         <ul style={{display: isShowed ? 'flex' : 'none' }} className={listStyle.list}>
